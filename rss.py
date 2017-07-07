@@ -11,12 +11,43 @@ def clear_tags(raw_text):
     return text
 
 
-def check_for_game(feed_url, number=0):
-    game = {"name" : '',
-            "date" : ''}
+def convert_date(text):
 
-    pattern_what = re.compile('Что: (.*)')
-    pattern_when = re.compile('Когда: (.*)')
+    days = {'январ': 1,
+            'феврал': 2,
+            'март': 3,
+            'апрел': 4,
+            'ма': 5,
+            'июн': 6,
+            'июл': 7,
+            'август': 8,
+            'сентябр': 9,
+            'октябр': 10,
+            'ноябр': 11,
+            'декабр': 12}
+
+    pattern = re.compile('(.*?), ([\d]{2}) (.*?), ([\d]{2})-([\d]{2})')
+    match = pattern.search(text)
+    if match:
+        day = int(match.group(2))
+        month = match.group(3)
+        hours = int(match.group(4))
+        mins = int(match.group(5))
+        for key in days:
+            if key in month:
+                month = days[key]
+                return month, day, hours, mins
+    else:
+        return False
+
+
+def check_for_game(feed_url, number=0):
+    game = {"name": '',
+            "date": '',
+            "text": ''}
+
+    pattern_what = re.compile('Что: (.*).')
+    pattern_when = re.compile('Когда: (.*).')
 
     feed_data = feedparser.parse(feed_url)
     items = feed_data["items"]
@@ -30,9 +61,10 @@ def check_for_game(feed_url, number=0):
 
     match_when = pattern_when.search(item_text)
     if match_when:
-        game["date"] = match_when.group(1)
+        game["date"] = convert_date(match_when.group(1))
 
     if game["name"] and game["date"]:
+        game["text"] = item_text
         return game
     else:
-        return "It's not a game-post"
+        return False
