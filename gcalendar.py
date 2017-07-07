@@ -36,11 +36,14 @@ def get_flags():
 def get_credentials():
 
     auth_url = 'https://www.googleapis.com/auth/calendar'
-    token_filename = 'secret_token.json'
+    token_filename = 'client_secret.json'
     app_name = 'ekbii2gcalendar'
 
     flags = get_flags()
-    credential_path = os.path.join('', token_filename)
+    credential_dir = os.path.join('', '.credentials')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
+    credential_path = os.path.join(credential_dir, 'calendar-python-quickstart.json')
     store = file.Storage(credential_path)
     credentials = store.get()
     if not credentials or credentials.invalid:
@@ -61,7 +64,7 @@ def make_event(game, calendar_id, token):
 
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    service = discovery.build('Мантисса', 'v3', http=http)
+    service = discovery.build('calendar', 'v3', http=http)
 
     date_start = iso_date(date)
     new_date = add_2_hours(date)
@@ -74,5 +77,5 @@ def make_event(game, calendar_id, token):
         "end": {"dateTime": date_end},
     }
 
-    event = service.events().insert(calendarId='primary', body=event_data).execute()
-    return "Event created: {}".format(event.get('htmlLink'))
+    event = service.events().insert(calendarId=calendar_id, body=event_data).execute()
+    print("Event created: {}".format(event.get('htmlLink')))
