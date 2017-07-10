@@ -41,16 +41,28 @@ def convert_date(text):
         return False
 
 
+def get_id(url):
+    pattern = re.compile('com\/(.*?).html')
+    match = pattern.search(url)
+    if match:
+        post_id = int(match.group(1))
+        return post_id
+    else:
+        return False
+
+
 def check_for_game(feed_url, number=0):
     game = {"name": '',
             "date": '',
-            "text": ''}
+            "text": '',
+            "id": ''}
 
     pattern_what = re.compile('Что: (.*).')
     pattern_when = re.compile('Когда: (.*).')
 
     feed_data = feedparser.parse(feed_url)
     items = feed_data["items"]
+    game["id"] = get_id(items[number]['link'])
 
     item_body = items[number].summary_detail.value
     item_text = clear_tags(item_body)

@@ -6,10 +6,10 @@ def create():
     return database
 
 
-def check_event(database, even_name):
+def check_event(database, event_id):
     event_db = database.get('events')
-    if even_name not in event_db:
-        event_db.set('events', even_name)
+    if event_id not in event_db:
+        event_db.set('events', event_id)
         return True
     else:
         return False
