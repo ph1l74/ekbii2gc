@@ -1,9 +1,10 @@
 import requests
 import httplib2
-from datetime import datetime
+from datetime import datetime, timedelta
 from apiclient import discovery
 from oauth2client import file, client, tools
 import os
+
 
 def iso_date(date):
     year = 2017
@@ -11,17 +12,11 @@ def iso_date(date):
     day = date[1]
     hours = date[2]
     mins = date[3]
-    date = datetime(year, month, day, hours, mins).isoformat()
-    date += 'Z'
-    return date
 
+    date_start = datetime(year, month, day, hours, mins)
+    date_end = date_start + timedelta(hours=2)
 
-def add_2_hours(date):
-    datelist = list(date)
-    datelist[2] += 2
-    result = tuple(datelist)
-
-    return result
+    return date_start.isoformat(), date_end.isoformat()
 
 
 def get_flags():
@@ -66,15 +61,13 @@ def make_event(game, calendar_id, token):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    date_start = iso_date(date)
-    new_date = add_2_hours(date)
-    date_end = iso_date(new_date)
+    date_start, date_end = iso_date(date)
 
     event_data = {
         "summary": name,
         "description": description,
-        "start": {"dateTime": date_start},
-        "end": {"dateTime": date_end},
+        "start": {"dateTime": date_start, "timeZone": "Asia/Yekaterinburg"},
+        "end": {"dateTime": date_end, "timeZone": "Asia/Yekaterinburg"},
     }
 
     event = service.events().insert(calendarId=calendar_id, body=event_data).execute()
