@@ -15,4 +15,3 @@ def check_ya_neck():
                 gcalendar.make_event(game, config.calendar_id, config.token)
             else:
                 print('Event already in calendar')
-
