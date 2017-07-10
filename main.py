@@ -1,8 +1,9 @@
 import config
 import rss
 import gcalendar
+import db
 
-token_name = config.token_name
+database = db.create()
 
 
 def check_ya_neck():
@@ -10,9 +11,8 @@ def check_ya_neck():
         game = rss.check_for_game(config.feed_url, i)
         if game:
             name = game["name"]
-            date = game["date"]
-            print(gcalendar.iso_date(date))
-
-game = rss.check_for_game(config.feed_url, 1)
-gcalendar.make_event(game, config.calendar_id, config.token)
+            if db.check_event(database, name):
+                gcalendar.make_event(game, config.calendar_id, config.token)
+            else:
+                print('Event already in calendar')
 

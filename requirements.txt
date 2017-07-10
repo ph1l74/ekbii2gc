@@ -1,3 +1,4 @@
 requests
 feedparser
 google-api-python-client
+redis
