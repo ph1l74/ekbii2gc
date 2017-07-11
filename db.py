@@ -2,13 +2,12 @@ import psycopg2
 
 
 def open_db(db_config):
-    user= db_config["user"]
+    user = db_config["user"]
     password = db_config["password"]
     host = db_config["address"]
     port = db_config["port"]
-    dbname = db_config["db_name"]
-
-    connect = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port= port)
+    db_name = db_config["db_name"]
+    connect = psycopg2.connect(dbname=db_name, user=user, password=password, host=host, port=port)
     database = connect.cursor()
     return database, connect
 
@@ -20,26 +19,19 @@ def close_db(database, connect):
 
 def add_event(db_config, event_id):
     database, connect = open_db(db_config)
-    SQL = "INSERT INTO games (game_id) VALUES (%s);"
-    if database.execute(SQL, (event_id,)):
-        print("Event {} created".format(event_id))
-        connect.commit()
-    else:
-        print("Something goes wrong")
+    database.execute("INSERT INTO games (game_id) VALUES (%s);", (event_id,))
+    connect.commit()
     close_db(database, connect)
+    print("Event {} added to database".format(event_id))
 
 
 def check_event(db_config, event_id):
     database, connect = open_db(db_config)
-    database.execute("SELECT game_id FROM games")
-    games = database.fetchall()
+    database.execute("SELECT * FROM games WHERE game_id = %s;", (event_id,))
+    viewed = database.fetchall()
     close_db(database, connect)
-    viewed_ids = {res[0] for res in games}
-    if event_id not in viewed_ids:
+    if not viewed:
         add_event(db_config, event_id)
         return True
     else:
         return False
-
-
-

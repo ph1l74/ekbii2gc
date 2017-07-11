@@ -1,5 +1,6 @@
 import feedparser
 import re
+from datetime import datetime, date
 
 
 def clear_tags(raw_text):
@@ -7,12 +8,10 @@ def clear_tags(raw_text):
     text = raw_text.replace('<br />', '\n')
     text = text.replace('&quot;', '"')
     text = re.sub(pattern, '', text)
-
     return text
 
 
 def convert_date(text):
-
     days = {'январ': 1,
             'феврал': 2,
             'март': 3,
@@ -25,7 +24,6 @@ def convert_date(text):
             'октябр': 10,
             'ноябр': 11,
             'декабр': 12}
-
     pattern = re.compile('(.*?), ([\d]{2}) (.*?), ([\d]{2})-([\d]{2})')
     match = pattern.search(text)
     if match:
@@ -33,10 +31,12 @@ def convert_date(text):
         month = match.group(3)
         hours = int(match.group(4))
         mins = int(match.group(5))
+        year = date.today().year
         for key in days:
             if key in month:
                 month = days[key]
-                return month, day, hours, mins
+                event_date = datetime(year, month, day, hours, mins)
+                return event_date
     else:
         return False
 
@@ -56,27 +56,22 @@ def check_for_game(feed_url, number=0):
             "date": '',
             "text": '',
             "id": ''}
-
     pattern_what = re.compile('Что: (.*).')
     pattern_when = re.compile('Когда: (.*).')
-
     feed_data = feedparser.parse(feed_url)
     items = feed_data["items"]
-    game["id"] = get_id(items[number]['link'])
-
     item_body = items[number].summary_detail.value
     item_text = clear_tags(item_body)
-
     match_what = pattern_what.search(item_text)
     if match_what:
         game["name"] = match_what.group(1)
         game["name"] = game["name"][0].upper() + game["name"][1:]
-
     match_when = pattern_when.search(item_text)
     if match_when:
         game["date"] = convert_date(match_when.group(1))
-
-    if game["name"] and game["date"]:
+    if get_id(items[number]['link']):
+        game["id"] = get_id(items[number]['link'])
+    if game["name"] and game["date"] and game["id"]:
         game["text"] = item_text
         return game
     else:
