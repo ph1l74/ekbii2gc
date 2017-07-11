@@ -1,3 +1,8 @@
+"""
+This module works with Google-API. The main function is 'make_event' that create an event in Google Calendar with
+game information.
+"""
+
 import httplib2
 from datetime import datetime, timedelta
 from apiclient import discovery
@@ -6,6 +11,11 @@ import os
 
 
 def get_flags():
+    """
+    This function get the flags for Google-API
+    :return: list of flags
+    :rtype: list
+    """
     try:
         import argparse
         flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -15,7 +25,11 @@ def get_flags():
 
 
 def get_credentials():
-
+    """
+    This function returns the user credentials for Google-API
+    :return: flow-object
+    :rtype: object
+    """
     auth_url = 'https://www.googleapis.com/auth/calendar'
     token_filename = 'client_secret.json'
     app_name = 'ekbii2gcalendar'
@@ -35,7 +49,14 @@ def get_credentials():
 
 
 def make_event(game, calendar_id):
-
+    """
+    This function make a new event in Google Calendar
+    :param game: dict with game info
+    :param calendar_id: calendar-ID
+    :type game:dict
+    :type calendar_id:str
+    :return: make an event
+    """
     name = game["name"]
     description = game["text"]
     credentials = get_credentials()

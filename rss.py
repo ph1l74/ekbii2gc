@@ -1,9 +1,19 @@
+"""
+This module works with rss-feed. The main function is 'check_for_game' that parse RSS-feed and return the game info.
+"""
 import feedparser
 import re
 from datetime import datetime, date
 
 
 def clear_tags(raw_text):
+    """
+    This function returns text without html/xml tags
+    :param raw_text:raw html/xml text
+    :type raw_text: str
+    :return:string-text without tags
+    :rtype: str
+    """
     pattern = re.compile('<.*?>')
     text = raw_text.replace('<br />', '\n')
     text = text.replace('&quot;', '"')
@@ -11,7 +21,14 @@ def clear_tags(raw_text):
     return text
 
 
-def convert_date(text):
+def convert_date(text_date):
+    """
+    This function convert date from text format to datetime-format
+    :param text_date:date in text-format
+    :type text_date:str
+    :return:date in datetime-format
+    :rtype:datetime
+    """
     days = {'январ': 1,
             'феврал': 2,
             'март': 3,
@@ -25,7 +42,7 @@ def convert_date(text):
             'ноябр': 11,
             'декабр': 12}
     pattern = re.compile('(.*?), ([\d]{2}) (.*?), ([\d]{2})-([\d]{2})')
-    match = pattern.search(text)
+    match = pattern.search(text_date)
     if match:
         day = int(match.group(2))
         month = match.group(3)
@@ -42,6 +59,13 @@ def convert_date(text):
 
 
 def get_id(url):
+    """
+    This function pop postID from text-url
+    :param url:url in text-format
+    :type url:str
+    :return:postID
+    :rtype:int
+    """
     pattern = re.compile('com\/(.*?).html')
     match = pattern.search(url)
     if match:
@@ -52,6 +76,15 @@ def get_id(url):
 
 
 def check_for_game(feed_url, number=0):
+    """
+    This function parse the rss-feed and return the dict with game info.
+    :param feed_url: URL of RSS-feed in string-format
+    :param number: (Optional) number of items to parse. Default = 1.
+    :type feed_url: str
+    :type number: int
+    :return: Dict with game info ("name", "date", "text", "id").
+    :rtype: dict
+    """
     game = {"name": '',
             "date": '',
             "text": '',
