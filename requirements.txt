@@ -1,5 +1,3 @@
-requests
 feedparser
 google-api-python-client
-py-postgresql
 psycopg2
