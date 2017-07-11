@@ -70,6 +70,7 @@ def check_for_game(feed_url, number=0):
     match_what = pattern_what.search(item_text)
     if match_what:
         game["name"] = match_what.group(1)
+        game["name"] = game["name"][0].upper() + game["name"][1:]
 
     match_when = pattern_when.search(item_text)
     if match_when:
