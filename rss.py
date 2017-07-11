@@ -9,9 +9,9 @@ from datetime import datetime, date
 def clear_tags(raw_text):
     """
     This function returns text without html/xml tags
-    :param raw_text:raw html/xml text
+    :param raw_text: raw html/xml text
     :type raw_text: str
-    :return:string-text without tags
+    :return: string-text without tags
     :rtype: str
     """
     pattern = re.compile('<.*?>')
@@ -24,10 +24,10 @@ def clear_tags(raw_text):
 def convert_date(text_date):
     """
     This function convert date from text format to datetime-format
-    :param text_date:date in text-format
-    :type text_date:str
-    :return:date in datetime-format
-    :rtype:datetime
+    :param text_date: date in text-format
+    :type text_date: str
+    :return: date in datetime-format
+    :rtype: datetime
     """
     days = {'январ': 1,
             'феврал': 2,
@@ -61,18 +61,16 @@ def convert_date(text_date):
 def get_id(url):
     """
     This function pop postID from text-url
-    :param url:url in text-format
-    :type url:str
-    :return:postID
-    :rtype:int
+    :param url: url in text-format
+    :type url: str
+    :return: postID
+    :rtype: int
     """
     pattern = re.compile('com\/(.*?).html')
     match = pattern.search(url)
     if match:
         post_id = int(match.group(1))
         return post_id
-    else:
-        return False
 
 
 def check_for_game(feed_url, number=0):
@@ -107,5 +105,3 @@ def check_for_game(feed_url, number=0):
     if game["name"] and game["date"] and game["id"]:
         game["text"] = item_text
         return game
-    else:
-        return False

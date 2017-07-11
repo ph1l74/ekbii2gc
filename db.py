@@ -19,21 +19,19 @@ def open_db(db_config):
     port = db_config["port"]
     db_name = db_config["db_name"]
     connect = psycopg2.connect(dbname=db_name, user=user, password=password, host=host, port=port)
-    database = connect.cursor()
-    return database, connect
+    cursor = connect.cursor()
+    return cursor, connect
 
 
-def close_db(database, connect):
+def close_db(cursor, connect):
     """
     This function close the connection to db
     :param database: database-object
     :param connect: connection-object
     :type database: object
     :type connect: object
-    :return: nothing
-
     """
-    database.close()
+    cursor.close()
     connect.close()
 
 
@@ -44,18 +42,17 @@ def add_event(db_config, event_id):
     :param event_id: event id to add
     :type db_config: dict
     :type event_id: int
-    :return: nothing
     """
-    database, connect = open_db(db_config)
-    database.execute("INSERT INTO games (game_id) VALUES (%s);", (event_id,))
+    cursor, connect = open_db(db_config)
+    cursor.execute("INSERT INTO games (game_id) VALUES (%s);", (event_id,))
     connect.commit()
-    close_db(database, connect)
+    close_db(cursor, connect)
     print("Event {} added to database".format(event_id))
 
 
 def check_event(db_config, event_id):
     """
-    This function check if event with event_id is in the db. If it isn't then it add to db.
+    This function check if event with event_id is in the db.
     :param db_config: db config dict
     :param event_id: event id to check
     :type db_config: dict
@@ -63,12 +60,11 @@ def check_event(db_config, event_id):
     :return: If event in db: False, if not: True
     :rtype: bool
     """
-    database, connect = open_db(db_config)
-    database.execute("SELECT * FROM games WHERE game_id = %s;", (event_id,))
-    viewed = database.fetchall()
-    close_db(database, connect)
+    cursor, connect = open_db(db_config)
+    cursor.execute("SELECT * FROM games WHERE game_id = %s;", (event_id,))
+    viewed = cursor.fetchall()
+    close_db(cursor, connect)
     if not viewed:
-        add_event(db_config, event_id)
         return True
     else:
         return False

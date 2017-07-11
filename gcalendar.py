@@ -53,9 +53,8 @@ def make_event(game, calendar_id):
     This function make a new event in Google Calendar
     :param game: dict with game info
     :param calendar_id: calendar-ID
-    :type game:dict
-    :type calendar_id:str
-    :return: make an event
+    :type game: dict
+    :type calendar_id: str
     """
     name = game["name"]
     description = game["text"]

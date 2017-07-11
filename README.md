@@ -15,17 +15,6 @@ game-post will be find the script starts to check the database. If the
 game-id already in database the even won't be create. In the other case
 the even will be created with the game information.
 
-## Files
-
-- config.py - configuration file
-- db.py - database module
-- gcalendar.py - Google Calendar module
-- LICENSE - LICENSE file
-- main.py - main module
-- README.md - README file
-- requirements.txt - list of libs
-- rss.py - rss-feed module
-
 ## Requirements
 
 - [feedparser](https://pypi.python.org/pypi/feedparser)
