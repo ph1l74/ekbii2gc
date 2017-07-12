@@ -41,7 +41,7 @@ def convert_date(text_date):
             'октябр': 10,
             'ноябр': 11,
             'декабр': 12}
-    pattern = re.compile('(.*?), ([\d]{2}) (.*?), ([\d]{2})-([\d]{2})')
+    pattern = re.compile('(.*?)[, ]([\d]{1,2}) (.*?), ([\d]{1,2})[-:]([\d]{1,2})')
     match = pattern.search(text_date)
     if match:
         day = int(match.group(2))
@@ -54,8 +54,6 @@ def convert_date(text_date):
                 month = days[key]
                 event_date = datetime(year, month, day, hours, mins)
                 return event_date
-    else:
-        return False
 
 
 def get_id(url):
@@ -66,7 +64,7 @@ def get_id(url):
     :return: postID
     :rtype: int
     """
-    pattern = re.compile('com\/(.*?).html')
+    pattern = re.compile('(\d*).html')
     match = pattern.search(url)
     if match:
         post_id = int(match.group(1))
@@ -77,7 +75,7 @@ def check_for_game(feed_url, number=0):
     """
     This function parse the rss-feed and return the dict with game info.
     :param feed_url: URL of RSS-feed in string-format
-    :param number: (Optional) number of items to parse. Default = 1.
+    :param number: (Optional) number of items to parse. Default = 0.
     :type feed_url: str
     :type number: int
     :return: Dict with game info ("name", "date", "text", "id").
