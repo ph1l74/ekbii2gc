@@ -88,6 +88,7 @@ def check_for_game(feed_url, number=0):
     pattern_what = re.compile('Что: (.*).')
     pattern_when = re.compile('Когда: (.*).')
     feed_data = feedparser.parse(feed_url)
+    print("parsed feed: {}".format(feed_url))
     items = feed_data["items"]
     item_body = items[number].summary_detail.value
     item_text = clear_tags(item_body)
