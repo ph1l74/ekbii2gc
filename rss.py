@@ -71,25 +71,12 @@ def get_id(url):
         return post_id
 
 
-def get_feed_items(feed_url):
+def check_for_game(feed_url, number=0):
     """
-        This function parse the rss-feed and return the dict with feed-items.
-        :param feed_url: URL of RSS-feed in string-format
-        :type feed_url: str
-        :return: Dict with items
-        :rtype: dict
-        """
-    feed_data = feedparser.parse(feed_url)
-    items = feed_data["items"]
-    return items
-
-
-def check_for_game(items, number=0):
-    """
-    This function take the dict with feed-items and returns the dict with game info.
-    :param items: dict of feed-items
+    This function parse the rss-feed and return the dict with game info.
+    :param feed_url: URL of RSS-feed in string-format
     :param number: (Optional) number of items to parse. Default = 0.
-    :type items: dict
+    :type feed_url: str
     :type number: int
     :return: Dict with game info ("name", "date", "text", "id").
     :rtype: dict
@@ -100,6 +87,8 @@ def check_for_game(items, number=0):
             "id": ''}
     pattern_what = re.compile('Что: (.*).')
     pattern_when = re.compile('Когда: (.*).')
+    feed_data = feedparser.parse(feed_url)
+    items = feed_data["items"]
     item_body = items[number].summary_detail.value
     item_text = clear_tags(item_body)
     match_what = pattern_what.search(item_text)

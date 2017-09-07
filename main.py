@@ -18,6 +18,7 @@ def check(count=1):
         if game:
             game_id = game["id"]
             game_name = game["name"]
+            print("parsed feed: {}".format(game_id, game_name))
             if db.check_event(config.db, game_id):
                 db.add_event(config.db, game_id)
                 gcalendar.make_event(game, config.calendar_id)
@@ -25,4 +26,4 @@ def check(count=1):
                 print('Event "{}" already in calendar'.format(game_name))
                 break
 
-check()
+check(10)
