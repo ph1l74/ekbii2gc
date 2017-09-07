@@ -26,4 +26,4 @@ def check(count=1):
                 print('Event "{}" already in calendar'.format(game_name))
                 break
 
-check(10)
+check()
