@@ -58,9 +58,3 @@ class TestRSS(unittest.TestCase):
         for raw, expected in test_strings:
             result = rss.get_id(raw)
             self.assertEqual(result, expected)
-
-    def test_check_for_game_numbers(self):
-        test_numbers = [1, -10, 125, 99999999, 6, 9-10, 10+2]
-        feed_url = os.environ['FEED_URL']
-        for number in test_numbers:
-            rss.check_for_game(feed_url, number)
