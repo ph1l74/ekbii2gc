@@ -35,7 +35,7 @@ def close_db(cursor, connect):
     connect.close()
 
 
-def add_event(db_config, event_id):
+def add_event(db_config, event_id, event_name, event_date):
     """
     This function add an event to db.
     :param db_config: db config dict
@@ -44,7 +44,7 @@ def add_event(db_config, event_id):
     :type event_id: int
     """
     cursor, connect = open_db(db_config)
-    cursor.execute("INSERT INTO games (game_id) VALUES (%s);", (event_id,))
+    cursor.execute("INSERT INTO games (game_id, game_name, game_date) VALUES (%s, %s, %s);", (event_id, event_name, event_date,))
     connect.commit()
     close_db(cursor, connect)
     print("Event {} added to database".format(event_id))
@@ -68,3 +68,31 @@ def check_event(db_config, event_id):
         return True
     else:
         return False
+
+
+def get_events(db_config):
+    cursor, connect = open_db(db_config)
+    cursor.execute("SELECT game_id FROM games;")
+    games_list = cursor.fetchall()
+    close_db(cursor, connect)
+    return games_list
+
+
+def get_event_info(db_config, event_id):
+    game = {"name": '',
+            "date": '',
+            "text": '',
+            "id": '',
+            "url": ''}
+
+    cursor, connect = open_db(db_config)
+    cursor.execute("SELECT * FROM games WHERE game_id = %s", (event_id,))
+    game_raw = cursor.fetchone()
+    game["id"] = game_raw[0]
+    game["date"] = game_raw[1]
+    game["name"] = game_raw[2]
+    game["url"] = 'https://ekbii.livejournal.com/{}.html'.format(game["id"])
+    close_db(cursor, connect)
+    return game
+
+

@@ -10,3 +10,5 @@ db = {"user": os.environ['DB_USER'],
       "address": os.environ['DB_ADDRESS'],
       "port": os.environ['DB_PORT'],
       "db_name": os.environ['DB_NAME']}
+
+bot_token = os.environ['BOT_TOKEN']
