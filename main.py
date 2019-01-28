@@ -14,7 +14,7 @@ def check(count=1):
     :type count: int
     """
     for i in range(0, count):
-        game = rss.check_for_game(rss.get_feed_items(config.feed_url), i)
+        game = rss.check_for_game(config.feed_url, i)
         if game:
             game_id = game["id"]
             game_name = game["name"]
